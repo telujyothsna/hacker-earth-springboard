@@ -29,3 +29,30 @@ Run `gulp build` for building and `gulp serve` for preview.
 ## Testing
 
 Running `npm test` will run the unit tests with karma.
+
+## Deploy Instructions
+
+Run `gulp build` that generates a `dist` folder with `client`, `server` and `package.json`. Zip and transfer compressed archive to server.
+
+### On the server
+
+Ensure your server has node, and mongodb. unzip the archive to a folder. Install `forever` with `npm install -g forever`.
+Enter folder `dist` with `cd dist`.
+Create a `production.json` file with the following contents. `vi production.json`. Press `i` to enter insert mode and paste in the following content.
+
+```json
+[
+  {
+    "uid": "springboard1",
+    "append": true,
+    "watch": true,
+    "l": "/root/dist/logs/app1out.log",
+    "e": "/root/dist/logs/app1err.log",
+    "script": "app.js",
+    "sourceDir":"/root/dist/server",
+    "args": ["--port", "9000"]
+  }
+]
+```
+
+Start your server with forever start production.json
