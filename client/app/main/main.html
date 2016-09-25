@@ -1,28 +1,57 @@
-<header class="hero-unit" id="banner">
-  <div class="container">
-    <h1>'Allo, 'Allo!</h1>
-    <p class="lead">Kick-start your next web app with Angular Fullstack</p>
-    <img src="assets/images/yeoman.png" alt="I'm Yeoman">
-  </div>
-</header>
-
 <div class="container">
   <div class="row">
     <div class="col-lg-12">
-      <h1 class="page-header">Features:</h1>
-      <ul class="nav nav-tabs nav-stacked col-md-4 col-lg-4 col-sm-6" ng-repeat="thing in $ctrl.awesomeThings">
-        <li><a href="#" uib-tooltip="{{thing.info}}">{{thing.name}}<button type="button" class="close" ng-click="$ctrl.deleteThing(thing)">&times;</button></a></li>
-      </ul>
+      <div class="row">
+        <div class="col-xs-12">
+          <div id="search-tags">
+            <div class="input-group col-md-12">
+              <input type="text" class="form-control input-lg" placeholder="Search" ng-model="searchTags" />
+              <span class="input-group-btn">
+                <button class="btn btn-info btn-lg" type="button">
+                <i class="glyphicon glyphicon-search"></i>
+                </button>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row" angular-grid="$ctrl.paths" angular-grid-id="gallery" ag-options="$ctrl.angularGridOptions">
+        <div class="cards col-xs-12 col-sm-6 col-md-3 col-lg-4"  ng-repeat="path in $ctrl.paths | filter:search">
+          <div class="panel panel-default bootcards-media">
+            <div class="panel-heading">
+              <h3 class="panel-title">{{path.name}}</h3>
+            </div>
+            <div class="panel-body">
+              {{path.description}}
+            </div>
+            <ul class="tags">
+              <li ng-repeat="tag in path.tags"><span class="tag">{{tag}}</span></li>
+            </ul>
+            <img src="{{path.image}}" class="img-responsive"/>
+            <div class="meta-div">
+              <span class="meta user-count" title="{{path.learner}} learners">
+                <i class="fa fa-users icon"></i>
+                {{path.learner}}
+              </span>
+              <span class="meta hours" title="{{path.hours}} hours">
+                <i class="fa fa-clock-o icon"></i>
+                {{path.hours}}
+              </span>
+              <span class="meta votes" title="{{path.hours}} hours">
+                <i class="fa fa-plus text-success icon"></i>
+                {{path.upvotes}}
+                /
+                <i class="fa fa-minus text-danger icon"></i>
+                {{path.downvotes}}
+              </span>
+            </div>
+            <div class="panel-footer">
+              <a href="{{path.sign_up}}" class="btn btn-primary btn-block action-btn" target="_blank">
+                <strong>Sign up</strong>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
-
-  <form class="thing-form">
-    <label>Syncs in realtime across clients</label>
-    <p class="input-group">
-      <input type="text" class="form-control" placeholder="Add a new thing here." ng-model="$ctrl.newThing">
-      <span class="input-group-btn">
-        <button type="submit" class="btn btn-primary" ng-click="$ctrl.addThing()">Add New</button>
-      </span>
-    </p>
-  </form>
-</div>

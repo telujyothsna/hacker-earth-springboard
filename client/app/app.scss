@@ -1,13 +1,20 @@
 $icon-font-path: '/assets/fonts/bootstrap/';
+@import 'bootstrap-overrides';
 @import '~bootstrap-sass/assets/stylesheets/bootstrap';
 $fa-font-path: '/assets/fonts/font-awesome/';
 @import '~font-awesome/scss/font-awesome';
 
-// @import url(http://fonts.googleapis.com/css?family=Open+Sans:300,400,600,900|Roboto:300,500,700,900);
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:300,400,600,900|Roboto:300,400,500,700,900);
 
 /**
  * App-wide Styles
  */
+
+body{
+  padding-top: 0;
+  font-family: 'Roboto';
+  font-weight: 400;
+}
 
 .browserupgrade {
   margin: 0.2em 0;
@@ -16,9 +23,18 @@ $fa-font-path: '/assets/fonts/font-awesome/';
   padding: 0.2em 0;
 }
 
+.action-btn{
+  letter-spacing: 1px;
+  font-weight: 700;
+  font-family: 'Open Sans';
+  text-transform: uppercase;
+}
+
 // Component styles are injected through gulp
 /* inject:scss */
+@import 'bootstrap-overrides';
 @import 'main/main';
 @import '../components/footer/footer';
 @import '../components/modal/modal';
+@import '../components/navbar/navbar';
 /* endinject */
