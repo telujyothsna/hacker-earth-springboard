@@ -10,7 +10,7 @@ var PathSchema = new mongoose.Schema({
   learner: Number,
   hours: Number,
   description: String,
-  sign_up: String,
+  signUp: String,
   upvotes: { type: Number, default: 0},
   downvotes: { type: Number, default: 0},
 });

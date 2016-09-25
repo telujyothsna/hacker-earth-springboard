@@ -38,13 +38,11 @@ export class MainController {
     $scope.$watch('propertyName', function(sortOn) {
       if (self.wholeList && self.wholeList.length) {
         self.wholeList = self.wholeList.sort(function(a, b) {
-
           if (a[sortOn] > b[sortOn]) {
             return 1;
           } else if (a[sortOn] < b[sortOn]) {
             return -1;
           }
-
           return 0;
         });
         if ($scope.searchTags) {

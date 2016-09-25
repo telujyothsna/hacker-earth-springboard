@@ -14,9 +14,6 @@ import jsonpatch from 'fast-json-patch';
 import Path from '../../models/path.model';
 import axios from 'axios';
 import async from 'async';
-import mongoose from 'mongoose';
-
-const ObjectId = mongoose.Types.ObjectId
 
 function respondWithResult(res, statusCode) {
   statusCode = statusCode || 200;
@@ -70,39 +67,38 @@ function handleError(res, statusCode) {
 
 // Gets a list of Paths
 export function index(req, res) {
-
   axios.get('https://hackerearth.0x10.info/api/learning-paths?type=json&query=list_paths')
     .then(function(response) {
       const paths = response.data.paths;
-
-      // const modelsToSend = [];
 
       async.map(paths,
         function(path, callback) {
           let tags;
 
-          path.learner = parseInt(path.learner.replace(',', ''));
-          path.hours = parseInt(path.hours);
+          path.learner = parseInt(path.learner.replace(',', ''), 10);
+          path.hours = parseInt(path.hours, 10);
           tags = path.tags.toLowerCase().split(', ');
           path.tags = tags;
 
           Path.findOneAndUpdate({
-              id: path.id
-            },
-            path, {
-              upsert: true,
-              setDefaultsOnInsert: true,
-            },
-            function(err, doc) {
-              callback(null, doc);
-              // console.log("insert done");
-              // console.log(arguments);
-
-            })
-
+            id: path.id,
+          },
+          path, {
+            upsert: true,
+            setDefaultsOnInsert: true,
+          },
+          function(err, doc) {
+            if(!err) {
+              return callback(null, doc);
+            } else {
+              return callback(err);
+            }
+          });
         },
         function(err, results) {
-          res.send(results);
+          if(!err) {
+            res.send(results);
+          }
         });
     });
 }
@@ -115,12 +111,16 @@ export function upvote(req, res) {
       upvotes: 1
     }
   }, function(err, doc) {
-    if (!err) {
+    if (!err && doc) {
       Path.findOne({
         id: req.params.id
-      }, function(err, doc) {
-        res.send(doc);
-      })
+      }, function(err, result) {
+        if(!err) {
+          res.send(result);
+        } else {
+          res.send({status: 400, msg: 'Failed'});
+        }
+      });
     }
   });
 }
@@ -133,12 +133,16 @@ export function downvote(req, res) {
       downvotes: 1
     }
   }, function(err, doc) {
-    if (!err) {
+    if (!err && doc) {
       Path.findOne({
         id: req.params.id
-      }, function(err, doc) {
-        res.send(doc);
-      })
+      }, function(err, result) {
+        if(!err) {
+          res.send(result);
+        } else {
+          res.send({status: 400, msg: 'Failed'});
+        }
+      });
     }
   });
 }
