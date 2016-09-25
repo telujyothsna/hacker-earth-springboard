@@ -5,7 +5,7 @@
         <div class="col-xs-12">
           <div id="search-tags">
             <div class="input-group col-md-12">
-              <input type="text" class="form-control input-lg" placeholder="Search" ng-model="searchTags" />
+              <input type="text" class="form-control input-lg" placeholder="Search with tags" ng-model="searchTags" />
               <span class="input-group-btn">
                 <button class="btn btn-info btn-lg" type="button">
                 <i class="glyphicon glyphicon-search"></i>
@@ -15,8 +15,38 @@
           </div>
         </div>
       </div>
+      <div class="row">
+        <div class="col-xs-12">
+          <h4 class="pull-left">
+            Available paths
+          </h4>
+          <span class="pull-right">
+            <span ng-if="$ctrl.paths && $ctrl.paths.length">{{$ctrl.paths.length}} results</span>
+            <span ng-if="$ctrl.paths && !$ctrl.paths.length">No results</span>
+            <span ng-if="!$ctrl.paths">Fetching results</span>
+          </span>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12 results-filters">
+          
+          <div class="btn-group pull-right">
+            <label class="btn btn-default" ng-model="propertyName" uib-btn-radio="'name'">Title
+            </label>
+            <label class="btn btn-default" ng-model="propertyName" uib-btn-radio="'learner'">Learners
+            </label>
+            <label class="btn btn-default" ng-model="propertyName" uib-btn-radio="'upvotes'">Votes
+            </label>
+            <label class="btn btn-default" ng-model="propertyName" uib-btn-radio="'hours'">Duration
+            </label>
+          </div>
+          <div class="pull-right">
+            <span class="btn">Sort by</span>
+          </div>
+        </div>
+      </div>
       <div class="row" angular-grid="$ctrl.paths" angular-grid-id="gallery" ag-options="$ctrl.angularGridOptions">
-        <div class="cards col-xs-12 col-sm-6 col-md-3 col-lg-4"  ng-repeat="path in $ctrl.paths | filter:search">
+        <div class="cards col-xs-12 col-sm-6 col-md-3 col-lg-4"  ng-repeat="path in $ctrl.paths | filter:search ">
           <div class="panel panel-default bootcards-media">
             <div class="panel-heading">
               <h3 class="panel-title">{{path.name}}</h3>
@@ -25,29 +55,31 @@
               {{path.description}}
             </div>
             <ul class="tags">
-              <li ng-repeat="tag in path.tags"><span class="tag">{{tag}}</span></li>
+              <li ng-repeat="tag in path.tags"><span class="tag" ng-class="(searchTags && tag.indexOf(searchTags) > -1) ? 'tag-match' : '' ">{{tag}}</span></li>
             </ul>
             <img src="{{path.image}}" class="img-responsive"/>
             <div class="meta-div">
               <span class="meta user-count" title="{{path.learner}} learners">
                 <i class="fa fa-users icon"></i>
-                {{path.learner}}
+                {{path.learner | number}}
               </span>
               <span class="meta hours" title="{{path.hours}} hours">
                 <i class="fa fa-clock-o icon"></i>
-                {{path.hours}}
+                {{path.hours | number}}+
               </span>
-              <span class="meta votes" title="{{path.hours}} hours">
-                <i class="fa fa-plus text-success icon"></i>
-                {{path.upvotes}}
+              <span class="meta votes" >
+                <span class="vote-btn" ng-click="voteForItem(path.id, 'upvote')" ><i class="fa fa-plus text-success icon"></i>
+                {{path.upvotes | number}}</span>
                 /
+                <span class="vote-btn" ng-click="voteForItem(path.id, 'downvote')" >
                 <i class="fa fa-minus text-danger icon"></i>
-                {{path.downvotes}}
+                {{path.downvotes | number}}
+                </span>
               </span>
             </div>
             <div class="panel-footer">
               <a href="{{path.sign_up}}" class="btn btn-primary btn-block action-btn" target="_blank">
-                <strong>Sign up</strong>
+                <strong>View Curriculum</strong>
               </a>
             </div>
           </div>

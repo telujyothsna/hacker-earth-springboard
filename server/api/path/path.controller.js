@@ -14,6 +14,9 @@ import jsonpatch from 'fast-json-patch';
 import Path from '../../models/path.model';
 import axios from 'axios';
 import async from 'async';
+import mongoose from 'mongoose';
+
+const ObjectId = mongoose.Types.ObjectId
 
 function respondWithResult(res, statusCode) {
   statusCode = statusCode || 200;
@@ -71,30 +74,73 @@ export function index(req, res) {
   axios.get('https://hackerearth.0x10.info/api/learning-paths?type=json&query=list_paths')
     .then(function(response) {
       const paths = response.data.paths;
-      
+
       // const modelsToSend = [];
-      
-      async.map(paths, 
-        function(path, callback){
-          let tags; 
-          tags = path.tags.split(', ');
+
+      async.map(paths,
+        function(path, callback) {
+          let tags;
+
+          path.learner = parseInt(path.learner.replace(',', ''));
+          path.hours = parseInt(path.hours);
+          tags = path.tags.toLowerCase().split(', ');
           path.tags = tags;
 
           Path.findOneAndUpdate({
-            id: path.id
-          },
-          path,
-          {
-            upsert: true
-          }, function(err, doc){                
-            callback(null, doc);  
-          })
-          
-        }, 
-        function(err, results){
+              id: path.id
+            },
+            path, {
+              upsert: true,
+              setDefaultsOnInsert: true,
+            },
+            function(err, doc) {
+              callback(null, doc);
+              // console.log("insert done");
+              // console.log(arguments);
+
+            })
+
+        },
+        function(err, results) {
           res.send(results);
         });
     });
+}
+
+export function upvote(req, res) {
+  Path.update({
+    id: req.params.id
+  }, {
+    $inc: {
+      upvotes: 1
+    }
+  }, function(err, doc) {
+    if (!err) {
+      Path.findOne({
+        id: req.params.id
+      }, function(err, doc) {
+        res.send(doc);
+      })
+    }
+  });
+}
+
+export function downvote(req, res) {
+  Path.update({
+    id: req.params.id
+  }, {
+    $inc: {
+      downvotes: 1
+    }
+  }, function(err, doc) {
+    if (!err) {
+      Path.findOne({
+        id: req.params.id
+      }, function(err, doc) {
+        res.send(doc);
+      })
+    }
+  });
 }
 
 // Gets a single Path from the DB

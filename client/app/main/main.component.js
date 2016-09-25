@@ -7,7 +7,7 @@ export class MainController {
   $http;
   socket;
   paths = [];
-  newThing = '';
+
 
   /*@ngInject*/
   constructor($http, $scope, socket) {
@@ -20,43 +20,69 @@ export class MainController {
     });
 
     $scope.angularGridOptions = {
-      gridWidth : 300,
-      gutterSize : 10,
-      refreshOnImgLoad : false
+      gridWidth: 300,
+      gutterSize: 10,
+      refreshOnImgLoad: false
     };
 
-    $scope.$watch('searchTags', function(val){
-      if(val && self.wholeList && self.wholeList.length){
-        self.paths = self.wholeList.filter(function(item){
-          return item.tags.join(' ').indexOf(val) > -1 ;
+    $scope.$watch('searchTags', function(val) {
+      if (val && self.wholeList && self.wholeList.length) {
+        self.paths = self.wholeList.filter(function(item) {
+          return item.tags.join(' ').indexOf(val) > -1;
         });
+      } else {
+        self.paths = self.wholeList;
       }
-      
     });
+
+    $scope.$watch('propertyName', function(sortOn) {
+      if (self.wholeList && self.wholeList.length) {
+        self.wholeList = self.wholeList.sort(function(a, b) {
+
+          if (a[sortOn] > b[sortOn]) {
+            return 1;
+          } else if (a[sortOn] < b[sortOn]) {
+            return -1;
+          }
+
+          return 0;
+        });
+        if ($scope.searchTags) {
+          self.paths = self.wholeList.filter(function(item) {
+            return item.tags.join(' ').indexOf($scope.searchTags) > -1;
+          });
+        } else {
+          self.paths = self.wholeList;
+        }
+      }
+    });
+
+    $scope.voteForItem = function(id, action) {
+      $http.put(`/api/paths/${id}/${action}`)
+        .then(response => {
+          const updatedRecord = response.data;
+          self.wholeList = self.wholeList.map(item => {
+            if (item.id === updatedRecord.id) {
+              return updatedRecord;
+            } else {
+              return item;
+            }
+          });
+
+          self.paths = self.wholeList;
+        });
+    };
   }
 
   $onInit() {
     this.$http.get('/api/paths')
       .then(response => {
         this.wholeList = response.data;
-        this.paths = response.data;
+        this.paths = this.wholeList;
         this.socket.syncUpdates('path', this.paths);
       });
-      
   }
 
-  // addThing() {
-  //   if(this.newThing) {
-  //     this.$http.post('/api/things', {
-  //       name: this.newThing
-  //     });
-  //     this.newThing = '';
-  //   }
-  // }
-
-  // deleteThing(thing) {
-  //   this.$http.delete(`/api/things/${thing._id}`);
-  // }
 }
 
 export default angular.module('hackerEarthSpringboardApp.main', [uiRouter, angularGrid])

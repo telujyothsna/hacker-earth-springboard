@@ -3,4 +3,29 @@ footer.footer {
   padding: 30px 0;
   margin-top: 70px;
   border-top: 1px solid #E5E5E5;
+
+  .vcard{
+
+    span {
+      position: relative;
+      &:before{
+        content:' ';
+        padding: 5px;
+      }
+
+      &:after{
+        content: '|';
+        padding: 5px;
+      }
+      &:last-child:after{
+        content:'';
+        padding-right: 0;
+      }
+
+      &:first-child:before{
+        content:'';
+        padding-left: 0;
+      }
+    }
+  }
 }

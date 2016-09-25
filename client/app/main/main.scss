@@ -61,6 +61,15 @@
     text-decoration: none;
     -webkit-transition: color 0.2s;
     font-size: 0.65em;
+
+    &.tag-match{
+      background-color: #0c0;
+      color: #fff;
+
+      &::after{
+        border-left-color: #0c0;
+      }
+    }
   }
   .tag::before {
     background: #fff;
@@ -119,4 +128,18 @@
 .grid-img.img-loaded {
   visibility: visible;
   opacity: 1;
+}
+
+
+.results-filters{
+  padding-bottom: 30px;
+}
+
+.vote-btn{
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 3px;
+  &:hover{
+    background-color: #eee;
+  }
 }
