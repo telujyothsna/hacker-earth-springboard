@@ -1,6 +1,9 @@
 # Problem
 The problem was given at [Hackerearth](https://www.hackerearth.com/springboard-frontend-hiring-challenge/).
 
+# Demo
+Please check the demo [here](http://139.59.29.115:9000)
+
 # hacker-earth-springboard
 
 This project was generated with the [Angular Full-Stack Generator](https://github.com/DaftMonk/generator-angular-fullstack) version 4.0.5.
